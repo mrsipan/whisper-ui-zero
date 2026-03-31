@@ -56,7 +56,7 @@
 ;; --- UI Components (Hiccup) ---
 (defn app-view []
   (let [{:keys [recording? chunks]} @App-State]
-    [:div {:class "has-text-centered":style {:font-family "sans-serif" :padding "20px"}}
+    [:div {:class "has-text-centered"}
      [:h1 "Whisper.cpp Live Stream"]
 
      [:button {:on-click (if recording? stop-streaming! start-streaming!)
