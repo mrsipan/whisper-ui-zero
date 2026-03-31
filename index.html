@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>whisper UI</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.0/css/bulma.min.css">
+    <script type="importmap">
+    {
+      "imports": {
+        "squint-cljs/core.js":
+        "https://cdn.jsdelivr.net/npm/squint-cljs@0.10.186/core.js"
+      }
+    }
+    </script>
+</head>
+<body>
+
+    <script type="module">
+        import { compileString } from
+        'https://cdn.jsdelivr.net/npm/squint-cljs@0.10.186/index.js';
+
+        async function loadAndRun(url) {
+            try {
+                const response = await fetch(url);
+                const cljsCode = await response.text();
+
+                const jsCode = compileString(cljsCode, {
+                    jsx: true,
+                    context: 'statement',
+                    core_url: 'squint-cljs/core.js'
+                });
+
+                // Execute
+                const blob = new Blob([jsCode], { type: 'text/javascript' });
+                const blobUrl = URL.createObjectURL(blob);
+                await import(blobUrl);
+
+                console.log(`Successfully compiled and ran: ${url}`);
+            } catch (err) {
+                console.error("Squint Compilation Error:", err);
+            }
+        }
+
+        // Initialize
+        loadAndRun('./app.cljs');
+
+        /* SIMPLE REFRESH HACK:
+           If you use VS Code 'Live Server' or 'npx serve',
+           the browser usually refreshes automatically when app.cljs changes.
+        */
+    </script>
+</body>
+</html>
